@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# bao-net2
+# python3 main.py --batch_size 4 --loss 1*spsrloss --lr 4e-4 --end_epoch 500 --activation relu --dataset gopro --data_root /media/nvme/datasets/b84152592/ --num_gpus 4 --threads 2 --trainer_mode ddp --lr_scheduler cosine --model bao-net2 --data_form _lmdb_baonet2 --profile_H 180 --profile_W 320 --frames 8 #--test_only  --test_checkpoint ./experiment/bao-net2-frombegin-nosbt/model_best.pth.tar --test_frames 8 --test_save_dir ./experiment/bao-net2-frombegin-nosbt/test_only #--resume --resume_file ./experiment/2021_08_11_23_17_21_bao-net2_gopro/model_best.pth.tar #--only_resume_model
+
+# bao-net
+# python3 main.py --batch_size 4 --loss 1*spsrloss --lr 4e-4 --end_epoch 100 --activation relu --dataset gopro --data_root /media/nvme/datasets/b84152592/ --num_gpus 2 --threads 2 --trainer_mode ddp --lr_scheduler cosine --model bao-net2_3 --data_form _lmdb_baonet2 #--test_only --test_checkpoint ./experiment/bao-net2-frombegin-nosbt-lpixeli0.01/model_best.pth.tar --test_frames 10 --test_save_dir ./experiment/bao-net2-frombegin-nosbt-lpixeli0.01/test_only
+
+# # bao-net2_4
+# python3 main.py --batch_size 4 --loss 1*L1_Charbonnier_loss_color --lr 4e-4 --end_epoch 450 --activation gelu --dataset davis240c --data_root /media/runqiu/data/davis240c/lmdb_4f/ --num_gpus 1 --threads 4 --trainer_mode ddp --lr_scheduler cosine --model bao-net2_4 --data_form _lmdb_baonet4 --resume --resume_file ./experiment/2021_10_24_15_42_23_bao-net2_4_davis240c/checkpoint.pth.tar #--test_only --test_checkpoint ./experiment/estrnn_with_gradient/model_best.pth.tar --test_frames 10 --test_save_dir ./experiment/estrnn_with_gradient/test_only
+
+# igp training
+# python3 main.py --batch_size 4 --loss 1*igp_loss_mono --metrics L1Distance_mono --lr 4e-4 --end_epoc 300 --activation gelu --dataset davis240c --data_root /media/runqiu/data/davis240c/lmdb_4f/ --num_gpus 1 --threads 4 --trainer_mode ddp --lr_scheduler cosine --model IGP2 --data_form _lmdb_baonet4 --frames 14 --n_blocks 3 --lr_min 1.4e-4  --test_only --test_checkpoint ./experiment/IGP2_davis240c_full/model_best.pth.tar --test_frames 10 --test_save_dir ./experiment/IGP2_davis240c_full/test_only   #--resume --resume_file /home/b84152592/code/Event_ESTRNN/experiment/2021_09_29_16_34_17_IGP2_gopro/checkpoint.pth.tar #--test_only --test_checkpoint /home/b84152592/code/Event_ESTRNN/experiment/IGP_ori_4e-4/model_best.pth.tar --test_frames 14 --test_save_dir /home/b84152592/code/Event_ESTRNN/experiment/IGP_ori_4e-4/test_only_gradient/ #--resume --resume_file ./experiment/igp_estrnn_model9_2/checkpoint.pth.tar
+
+# # igp deblur
+# python3 main.py --batch_size 4 --loss 1*L1_Charbonnier_loss_color --metrics PSNR --lr 4e-4 --lr_min 1e-06 --end_epoch 450 --activation gelu --dataset davis240c --data_root /media/runqiu/data/davis240c/lmdb_4f/ --num_gpus 1 --threads 4 --trainer_mode dp --lr_scheduler cosine --model bao-net2_4_integralrdb --data_form _lmdb_baonet4 --frames 14 --n_blocks 3 --n_block_igp 3 --resume --resume_file ./experiment/IGP2_davis240c_full/model_best.pth.tar --only_resume_model #--only_resume_model #--test_only --test_checkpoint ./experiment/baonet_davis240c_full/model_best.pth.tar --test_frames 14 --test_save_dir ./experiment/baonet_davis240c_full/test_only  #--resume --resume_file ./experiment/IGP2_davis240c_full/model_best.pth.tar --only_resume_model
+
+# cdvd training
+python3 main.py --batch_size 1 --loss 1*CdvdLoss --metrics PSNR_shave --lr 1e-4 --lr_decay 200 --end_epoch 500 -activation relu --dataset davis240c --data_root /media/runqiu/data/davis240c/lmdb_4f/ --num_gpus 1 --threads 4 --trainer_mode dp --lr_scheduler step_lr --model cdvd_tsp2 --data_form _lmdb_baonet4 --frames 5 --test_only --test_checkpoint ./experiment/cdvd_tsp/model_best.pth.tar --test_frames 24 --test_save_dir ./experiment/cdvd_tsp/test_only

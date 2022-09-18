@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python main.py --batch_size 4 --loss 1*LPIPS_Loss --lr 4e-4 --end_epoch 500 --activation relu --dataset gopro_event_nr --data_root /home/ma-user/work/dvs/datasets/gopro_compact/ --num_gpus 1 --threads 8 --trainer_mode dp --lr_scheduler lr_bit --model EFE --frames 1 # --no_profile --test_only --test_save_dir ./test --test_checkpoint ./experiment/2021_05_04_18_00_29_EFE_gopro_event_nr/model_best.pth.tar
