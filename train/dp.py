@@ -91,7 +91,7 @@ def process(para):
 
     # training and validation
     for epoch in range(para.start_epoch, para.end_epoch + 1):
-        # train(train_loader, model, criterion, metrics, opt, epoch, para, logger)
+        train(train_loader, model, criterion, metrics, opt, epoch, para, logger)
         valid(valid_loader, model, criterion, metrics, epoch, para, logger)
 
         # save checkpoint

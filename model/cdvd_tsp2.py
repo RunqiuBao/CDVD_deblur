@@ -21,6 +21,7 @@ class Model(nn.Module):
 
         self.n_sequence = n_sequence
         self.device = device
+        self.para = para
 
         assert n_sequence == 5, "Only support args.n_sequence=5; but get args.n_sequence={}".format(n_sequence)
 
@@ -62,10 +63,13 @@ class Model(nn.Module):
 
         return luckiness
 
-    def forward(self, x):
+    def forward(self, x, profile_flag=False):
         # (n,5,17,h,w)
-        x = x[:,:,0,:,:].unsqueeze(2)
-        x = x.repeat(1,1,3,1,1)
+        if self.para.if_RGB == 1:
+            x = x[:,:,0,:,:].unsqueeze(2)
+            x = x.repeat(1,1,3,1,1)
+        else:
+            x = x[:, :, :self.para.if_RGB, :, :]
 
         frame_list = [x[:, i, :, :, :] for i in range(self.n_sequence)]
 
@@ -110,7 +114,10 @@ class Model(nn.Module):
         recons_3 = normalize_reverse(recons_3, normalize=True)
         out = normalize_reverse(out, normalize=True)
 
-        return recons_1[:,0].unsqueeze(1), recons_2[:,0].unsqueeze(1), recons_3[:,0].unsqueeze(1), out[:,0].unsqueeze(1)   # (n,1,h,w)
+        if self.para.if_RGB == 1:
+            return recons_1[:,0].unsqueeze(1), recons_2[:,0].unsqueeze(1), recons_3[:,0].unsqueeze(1), out[:,0].unsqueeze(1)   # (n,1,h,w)
+        else:
+            return recons_1, recons_2, recons_3, out   # (n,3,h,w)
 
 
 def feed(model, iter_samples):
@@ -119,9 +126,9 @@ def feed(model, iter_samples):
     return outputs
 
 
-def cost_profile(model, H, W, seq_length):
-    x = torch.randn(1, seq_length, 17, H, W).cuda()
+def cost_profile(model, H, W, seq_length, para):
+    x = torch.randn(1, seq_length, para.profile_C, H, W).cuda()
     profile_flag = True
-    flops, params = profile(model, inputs=(x,), verbose=False)
+    flops, params = profile(model, inputs=(x, profile_flag), verbose=False)
 
     return flops / seq_length, params

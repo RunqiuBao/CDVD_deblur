@@ -37,16 +37,18 @@ def im2tensor(image, cent=1., factor=255. / 2.):
 #     return psnr
 
 def psnr_calculate(x, y, val_range=255.0):
-    n = x.shape[0]
-    mses = []
-        
-    for i in range(n):
-        diff = np.clip(x[i], 0, val_range) - np.clip(y[i], 0, val_range)
-        mse = np.array(np.mean(np.power(diff/val_range, 2)))[np.newaxis,]
-        mses.append(mse)
-    mses = np.concatenate(mses, axis=0)
+    '''
+    x, y can only be single image.
+    '''
+    # x,y size (h,w,c)
+    # assert len(x.shape) == 3
+    # assert len(y.shape) == 3
+    x = x.astype(np.float)
+    y = y.astype(np.float)
+    diff = (x - y) / val_range
+    mse = np.mean(diff ** 2)
     psnr = -10 * np.log10(mse)
-    return psnr.mean()
+    return psnr
 
 def ssim_calc_torch(x,y,val_range=255.0):
     myssim = ssim( x, y, data_range=val_range, size_average=True) # return a scalar

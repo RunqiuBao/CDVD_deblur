@@ -1,0 +1,8 @@
+datasetName: "mvsec"
+H: 260
+W: 346
+Cev: 8
+cropH: 256
+cropW: 320
+Cimg: 1
+numGt: 4

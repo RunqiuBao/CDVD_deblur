@@ -1,0 +1,7 @@
+datasetName: "beamsplitter"
+H: 720
+W: 1280
+Cev: 16
+cropMargin: 300 
+Cimg: 3
+numGt: 4

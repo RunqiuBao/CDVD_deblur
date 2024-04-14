@@ -131,7 +131,7 @@ class RDBCell(nn.Module):
         self.activation = para.activation
         self.n_feats = para.n_features
         self.n_blocks = para.n_blocks
-        self.F_B0 = conv5x5(1, self.n_feats, stride=1)
+        self.F_B0 = conv5x5(para.if_RGB, self.n_feats, stride=1)
         self.F_B1 = RDB_DS(in_channels=self.n_feats, growthRate=self.n_feats, num_layer=3, activation=self.activation)
         self.F_B2 = RDB_DS(in_channels=2 * self.n_feats, growthRate=int(self.n_feats * 3 / 2), num_layer=3,
                            activation=self.activation)
@@ -168,7 +168,7 @@ class Reconstructor(nn.Module):
             nn.ConvTranspose2d((5 * self.n_feats) * (self.related_f), 2 * self.n_feats, kernel_size=3, stride=2,
                                padding=1, output_padding=1),
             nn.ConvTranspose2d(2 * self.n_feats, self.n_feats, kernel_size=3, stride=2, padding=1, output_padding=1),
-            conv5x5(self.n_feats, 4, stride=1)
+            conv5x5(self.n_feats, 3, stride=1)
         )
 
     def forward(self, x):
@@ -191,8 +191,12 @@ class Model(nn.Module):
         self.recons = Reconstructor(para)
         self.fusion = GSA(para)
 
-    def forward(self, x):
-        x = x[:,:,0,:,:].unsqueeze(2)
+    def forward(self, x, profile_flag=False):
+        if self.para.if_RGB == 1:
+            x = x[:, :, 0, :, :].unsqueeze(2)
+            x = x.repeat(1, 1, 3, 1, 1)
+        else:
+            x = x[:, :, :self.para.if_RGB, :, :]
         outputs, hs = [], []
         batch_size, frames, channels, height, width = x.shape
         s_height = int(height / self.ds_ratio)
@@ -216,8 +220,9 @@ def feed(model, iter_samples):
     return outputs
 
 
-def cost_profile(model, H, W, seq_length):
-    x = torch.randn(1, seq_length, 17, H, W).cuda()
-    flops, params = profile(model, inputs=(x,), verbose=False)
+def cost_profile(model, H, W, seq_length, para):
+    x = torch.randn(1, seq_length, para.profile_C, H, W).cuda()
+    profile_flag = True
+    flops, params = profile(model, inputs=(x, profile_flag), verbose=False)
 
     return flops / seq_length, params

@@ -21,6 +21,10 @@ class Parameter:
                                  help='height of image to generate profile of model')
         self.parser.add_argument('--profile_W', type=int, default=240,
                                  help='width of image to generate profile of model')
+        self.parser.add_argument('--profile_C', type=int, default=19,
+                                 help='channel number of inputs to generate profile of model')
+        self.parser.add_argument('--if_RGB', type=int, default=3,
+                                 help='channel number of image')
         self.parser.add_argument('--resume', action='store_true', help='resume from checkpoint')
         self.parser.add_argument('--resume_file', type=str, default='', help='the path of checkpoint file for resume')
         self.parser.add_argument('--only_resume_model', action='store_true',help='only resume model state_dict')
@@ -75,6 +79,7 @@ class Parameter:
 
         # test parameters
         self.parser.add_argument('--test_only', action='store_true', help='only do test')
+        self.parser.add_argument('--test_timing', action='store_true', help='only do time test')
         self.parser.add_argument('--test_frames', type=int, default=20,
                                  help='frame size for test, if GPU memory is small, please reduce this value')
         self.parser.add_argument('--test_save_dir', type=str, help='where to save test results')

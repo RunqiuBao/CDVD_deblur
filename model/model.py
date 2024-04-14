@@ -19,5 +19,5 @@ class Model(nn.Module):
         H, W = self.para.profile_H, self.para.profile_W
 #         seq_length = self.para.future_frames + self.para.past_frames + 1
         seq_length = 5
-        flops, params = self.module.cost_profile(self.model, H, W, seq_length)
+        flops, params = self.module.cost_profile(self.model, H, W, seq_length, self.para)
         return flops, params

@@ -6,7 +6,7 @@ import torch.multiprocessing as mp
 from utils import Logger
 from .ddp import dist_process
 from .dp import process
-from .test import test
+from .test import test, TestTiming
 
 
 class Trainer(object):
@@ -40,4 +40,8 @@ class Trainer(object):
                 process(self.para)
 
         # test
-        test(self.para, logger)
+        if self.para.test_only and (not self.para.test_timing):
+            test(self.para, logger)
+
+        if self.para.test_timing:
+            TestTiming(self.para,  logger)
